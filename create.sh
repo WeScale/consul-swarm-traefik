@@ -171,6 +171,8 @@ docker service create \
     --mount type=bind,source=$PWD/traefik.toml,target=/etc/traefik/traefik.toml \
     --network multi-host-net \
     traefik \
+    --consulCatalog.endpoint=$ip_consul_leader:8500 \
+    --consul.endpoint=$ip_consul_leader:8500 \
     --web
 
 # docker service create \
@@ -225,5 +227,7 @@ docker service create --replicas 3 \
     --env CONSUL_HOST=$ip_consul_leader wescale/consuldemo
 
 echo "Go to http://$ip_leader1:5050"
+echo "Go to http://$ip_leader1:8080"
+echo "Go to http://$ip_leader1:8500"
 
 # docker service scale web=10

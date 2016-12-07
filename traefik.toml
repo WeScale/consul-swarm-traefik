@@ -9,12 +9,10 @@ defaultEntryPoints = ["http", "https"]
   address = ":443"
 
 [consul]
-  endpoint = "10.0.9.3:8500"
   watch = true
   prefix = "traefik"
 
 [consulCatalog]
-  endpoint = "10.0.9.3:8500"
   domain = "consul.localhost"
   prefix = "traefik-consul"
 
