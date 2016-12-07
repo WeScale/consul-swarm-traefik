@@ -1,0 +1,22 @@
+logLevel = "DEBUG"
+
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+  [entryPoints.https]
+  address = ":443"
+
+[consul]
+  endpoint = "10.0.9.3:8500"
+  watch = true
+  prefix = "traefik"
+
+[consulCatalog]
+  endpoint = "10.0.9.3:8500"
+  domain = "consul.localhost"
+  prefix = "traefik-consul"
+
+[web]
+  address = ":8080"
