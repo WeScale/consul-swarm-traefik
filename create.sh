@@ -17,11 +17,6 @@ docker-machine create \
 worker2
 
 ip_leader1=$(docker-machine ip leader1)
-ip_worker1=$(docker-machine ip worker1)
-ip_worker2=$(docker-machine ip worker2)
-
-ip_gateway="10.0.9.1"
-
 
 # create swarm cluster
 eval "$(docker-machine env leader1)"
@@ -75,16 +70,22 @@ ip_consul_leader=$(eval $format_command)
 
 echo "consul-leader: $ip_consul_leader"
 
-docker service create --replicas 1 \
-    --name consul-node1 \
-    --network multi-host-net \
-    --constraint 'node.hostname == worker1' \
-    progrium/consul -server -join $ip_consul_leader
+# docker service create --replicas 1 \
+#     --name consul-node1 \
+#     --network multi-host-net \
+#     --constraint 'node.hostname == worker1' \
+#     progrium/consul -server -join $ip_consul_leader
 
-docker service create --replicas 1 \
-    --name consul-node2 \
+# docker service create --replicas 1 \
+#     --name consul-node2 \
+#     --network multi-host-net \
+#     --constraint 'node.hostname == worker2' \
+#     progrium/consul -server -join $ip_consul_leader
+
+docker service create \
+    --name consul-nodes \
     --network multi-host-net \
-    --constraint 'node.hostname == worker2' \
+    --mode global \
     progrium/consul -server -join $ip_consul_leader
 
 
@@ -230,4 +231,29 @@ echo "Go to http://$ip_leader1:5050"
 echo "Go to http://$ip_leader1:8080"
 echo "Go to http://$ip_leader1:8500"
 
-# docker service scale web=10
+#docker service scale web=10
+
+
+docker-machine create \
+      --engine-env 'DOCKER_OPTS="-H unix:///var/run/docker.sock"' \
+      --driver virtualbox \
+leader2
+docker-machine create \
+      --engine-env 'DOCKER_OPTS="-H unix:///var/run/docker.sock"' \
+      --driver virtualbox \
+worker3
+
+
+eval "$(docker-machine env worker3)"
+docker swarm join \
+    --token $token \
+    $ip_leader1:2377
+
+eval "$(docker-machine env leader1)"
+token_leader=$(docker swarm join-token manager -q)
+echo "token_leader: $token_leader"
+
+eval "$(docker-machine env leader2)"
+docker swarm join \
+    --token $token_leader \
+    $ip_leader1:2377
