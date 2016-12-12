@@ -13,7 +13,7 @@ defaultEntryPoints = ["http", "https"]
   prefix = "traefik"
 
 [consulCatalog]
-  domain = "consul.localhost"
+  domain = "localhost"
   prefix = "traefik-consul"
 
 [web]

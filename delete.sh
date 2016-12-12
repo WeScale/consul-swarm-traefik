@@ -5,11 +5,7 @@ docker service rm web
 docker service rm traefik
 docker service rm viz
 docker service rm consul-leader
-docker service rm consul-node1
-docker service rm consul-node2
-
-
-# docker rmi itwars/h2o itwars/varnish itwars/haproxy itwars/phpfpm
+docker service rm consul-nodes
 
 eval "$(docker-machine env worker3)"
 docker swarm leave
